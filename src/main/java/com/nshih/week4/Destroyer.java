@@ -43,6 +43,6 @@ public class Destroyer extends Ship {
 
 	public String toString() {
 		return "New contact! Type: " + getType() + ", Name: " + getName() + ", Length: " + getLength() + 
-				"ft, Speed: " + getSpeed() + "knots, Number of missiles: " + getNumberMissle();
+				" ft, Speed: " + getSpeed() + " knots, Number of missiles: " + getNumberMissle();
 	}
 }

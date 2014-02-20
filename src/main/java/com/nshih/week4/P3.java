@@ -31,6 +31,7 @@ public class P3 extends Aircraft {
 	}
 	
 	public String toString() {
-		return "New contact, type: " + this.getType() + " name: " + this.getName();
+		return "New contact! Type: " + getType() + ", Name: " + getName() + ", Length: " + getLength() + 
+				" ft, Speed: " + getSpeed() + " knots, Number of engines: " + getNumberEngines();
 	}
 }

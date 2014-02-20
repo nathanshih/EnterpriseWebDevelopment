@@ -42,6 +42,7 @@ public class Submarine extends Ship {
 	}
 	
 	public String toString() {
-		return "New contact, type: " + this.getType() + " name: " + this.getName();
+		return "New contact! Type: " + getType() + ", Name: " + getName() + ", Length: " + getLength() + 
+				" ft, Speed: " + getSpeed() + " knots, Number of torpedoes: " + getNumberTorpedos();
 	}
 }
