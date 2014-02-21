@@ -9,40 +9,40 @@ package com.nshih.week4;
  */
 public class Destroyer extends Ship {
 
-	private int numberMissle;
+	private int numberMissiles;
 
-	public Destroyer(int length, int speed, String name, String type, int numberMissle) throws Exception {
+	public Destroyer(int length, int speed, String name, String type, int numberMissile) throws Exception {
 		setLength(length);
 		setSpeed(speed);
 		setName(name);
 		setType(type);
-		setNumberMissle(numberMissle);
+		setNumberMissiles(numberMissile);
 	}
 	
-	public int getNumberMissle() {
-		return numberMissle;
+	public int getNumberMissiles() {
+		return numberMissiles;
 	}
 	
-	public void setNumberMissle(int numberMissle) throws Exception {
-		if (numberMissle < 0) {
-			throw new Exception("Attribute 'numberMissle' must be greater than -1.");
+	public void setNumberMissiles(int numberMissiles) throws Exception {
+		if (numberMissiles < 0) {
+			throw new Exception("Attribute 'numberMissiles' must be greater than -1.");
 		} else {
-			this.numberMissle = numberMissle;
+			this.numberMissiles = numberMissiles;
 		}
 	}
 	
-	public void setNumberMissle(String numberMissle) throws Exception {
+	public void setNumberMissiles(String numberMissiles) throws Exception {
 		try {
-			setNumberMissle(Integer.parseInt(numberMissle));
+			setNumberMissiles(Integer.parseInt(numberMissiles));
 		} catch (NumberFormatException nfe) {
 			System.err.println(nfe.getLocalizedMessage());
-			System.err.println("Setting numberMissle to 2.");
-			this.numberMissle = 2;
+			System.err.println("Setting 'numberMissiles' to 2.");
+			setNumberMissiles(2); // per step 3, set to 2
 		}
 	}
 
 	public String toString() {
 		return "New contact! Type: " + getType() + ", Name: " + getName() + ", Length: " + getLength() + 
-				" ft, Speed: " + getSpeed() + " knots, Number of missiles: " + getNumberMissle();
+				" ft, Speed: " + getSpeed() + " knots, Number of missiles: " + getNumberMissiles();
 	}
 }

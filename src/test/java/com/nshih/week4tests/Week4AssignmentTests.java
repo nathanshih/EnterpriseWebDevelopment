@@ -5,8 +5,10 @@
 package com.nshih.week4tests;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -105,5 +107,120 @@ public class Week4AssignmentTests {
 		contacts.put(aurora.getName(), aurora);
 		Assert.assertEquals(orion, contacts.get(orion.getName()));
 		Assert.assertEquals(aurora, contacts.get(aurora.getName()));
+	}
+	
+	/**
+	 * Attempt to set 'numberTorpedoes' to "Foo". 
+	 * @throws Exception
+	 */
+	@Test
+	public void testNumberTorpedoesBadString() throws Exception {
+		Submarine submarine = new Submarine(377, 25, "USS Nebraska", "Virginia-class", 450);
+		
+		submarine.setNumberTorpedoes("Foo");
+		
+		// number of torpedoes should be set to 2
+		Assert.assertEquals(2, submarine.getNumberTorpedoes());
+	}
+	
+	/**
+	 * Test using bad inputs for Submarine class.
+	 * @throws Exception 
+	 */
+	@Test
+	public void testSubmarineBadInputs() throws Exception {
+		int expectedLength = 377;
+		int expectedSpeed = 25;
+		int expectedNumberTorpedoes = 450;
+		
+		Submarine submarine = new Submarine(expectedLength, expectedSpeed, "USS Nebraska", "Virginia-class", expectedNumberTorpedoes);
+		
+		// attempt 0 length
+		try {
+			submarine.setLength(0);
+			Assert.fail("Should not have been able to set 'length' to 0.");
+		} catch (Exception e) {
+			Assert.assertEquals(expectedLength, submarine.getLength());
+		}
+		
+		// attempt negative speed
+		try {
+			submarine.setSpeed(-23);
+			Assert.fail("Should not have been able to set 'speed' to negative.");
+		} catch (Exception e) {
+			Assert.assertEquals(expectedSpeed, submarine.getSpeed());
+		}
+
+		// attempt negative numberTorpedoes via String
+		try {
+			submarine.setNumberTorpedoes("-23");
+			Assert.fail("Should not have been able to set 'numberTorpedoes' to negative.");
+		} catch (Exception e) {
+			Assert.assertEquals(expectedNumberTorpedoes, submarine.getNumberTorpedoes());
+		}
+	}
+	
+	/**
+	 * Test setting both 'speed' and 'numberTorpedoes' to zero.
+	 * @throws Exception 
+	 */
+	@Test
+	public void testSubmarineZeroValues() throws Exception {
+		int expectedLength = 377;
+		int expectedSpeed = 0;
+		int expectedNumberTorpedoes = 0;
+		
+		Submarine submarine = new Submarine(expectedLength, expectedSpeed, "USS Nebraska", "Virginia-class", expectedNumberTorpedoes);
+		
+		Assert.assertEquals(expectedSpeed, submarine.getSpeed());
+		Assert.assertEquals(expectedNumberTorpedoes, submarine.getNumberTorpedoes());
+	}
+	
+	/**
+	 * Test setting 'numberMissiles' to a negative number via String.
+	 */
+	@Test
+	public void testDestroyerNegativeMissles() throws Exception {
+		int expectedNumberMissiles = 1000;
+		
+		Destroyer destroyer = new Destroyer(509, 28, "USS Bainbridge", "Bainbridge-class", expectedNumberMissiles);
+		
+		try {
+			destroyer.setNumberMissiles("-1");
+			Assert.fail("Should not have been able to set 'numberMissiles' to negative.");
+		} catch (Exception e) {
+			Assert.assertEquals(expectedNumberMissiles, destroyer.getNumberMissiles());
+		}
+	}
+	
+	/**
+	 * Test setting 'numberEngines' to zero.
+	 */
+	@Test
+	public void testP3NegativeEngines() throws Exception {
+		int expectedNumberEngines = 4;
+		
+		P3 airplane = new P3(116, 405, "Orion", "AP-3C", expectedNumberEngines);
+		
+		try {
+			airplane.setNumberEngines(0);
+			Assert.fail("Should not have been able to set 'numberEngines' to 0.");
+		} catch (Exception e) {
+			Assert.assertEquals(expectedNumberEngines, airplane.getNumberEngines());
+		}
+	}
+	
+	/**
+	 * Print out all contacts.
+	 */
+	@SuppressWarnings("rawtypes")
+	@AfterClass 
+	public static void printContacts() {
+		Iterator it = contacts.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry contact = (Map.Entry)it.next();
+			System.out.println(contact.getKey() + "=" + contact.getValue());
+			it.remove();
+		}
 	}
 }

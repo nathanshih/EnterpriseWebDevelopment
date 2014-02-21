@@ -9,40 +9,40 @@ package com.nshih.week4;
  */
 public class Submarine extends Ship {
 
-	private int numberTorpedos;
+	private int numberTorpedoes;
 
 	public Submarine(int length, int speed, String name, String type, int numberTorpedos) throws Exception {
 		setLength(length);
 		setSpeed(speed);
 		setName(name);
 		setType(type);
-		setNumberTorpedos(numberTorpedos);
+		setNumberTorpedoes(numberTorpedos);
 	}
 	
-	public int getNumberTorpedos() {
-		return numberTorpedos;
+	public int getNumberTorpedoes() {
+		return numberTorpedoes;
 	}
 
-	public void setNumberTorpedos(int numberTorpedos) throws Exception {
-		if (numberTorpedos < 0) {
-			throw new Exception("Attribute 'numberTorpedos' must be greater than -1.");
+	public void setNumberTorpedoes(int numberTorpedoes) throws Exception {
+		if (numberTorpedoes < 0) {
+			throw new Exception("Attribute 'numberTorpedoes' must be greater than -1.");
 		} else {
-			this.numberTorpedos = numberTorpedos;
+			this.numberTorpedoes = numberTorpedoes;
 		}
 	}
 	
-	public void setNumberTorpedos(String numberTorpedos) throws Exception {
+	public void setNumberTorpedoes(String numberTorpedoes) throws Exception {
 		try {
-			setNumberTorpedos(Integer.parseInt(numberTorpedos));
+			setNumberTorpedoes(Integer.parseInt(numberTorpedoes));
 		} catch (NumberFormatException nfe) {
 			System.err.println(nfe.getLocalizedMessage());
-			System.err.println("Setting numberTorpedos to 2.");
-			this.numberTorpedos = 2;
+			System.err.println("Setting 'numberTorpedoes' to 2.");
+			setNumberTorpedoes(2); // per step 4, set to 2
 		}
 	}
 	
 	public String toString() {
 		return "New contact! Type: " + getType() + ", Name: " + getName() + ", Length: " + getLength() + 
-				" ft, Speed: " + getSpeed() + " knots, Number of torpedoes: " + getNumberTorpedos();
+				" ft, Speed: " + getSpeed() + " knots, Number of torpedoes: " + getNumberTorpedoes();
 	}
 }
