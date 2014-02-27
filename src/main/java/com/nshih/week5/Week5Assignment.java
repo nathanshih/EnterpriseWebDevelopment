@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.util.Calendar;
 
 import com.rbevans.bookingrate.BookingDay;
+import com.rbevans.bookingrate.Rates;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -34,17 +35,24 @@ public class Week5Assignment {
 	private static JTextField txtForHowLong;
 	private static JTextPane txtpnCurrentHikingTours;
 	private static JComboBox<String> comboHikes;
-	private static JComboBox<String> comboDuration;
+	private static JComboBox<Integer> comboDuration;
 	private static JDatePanelImpl datePanel;
 	private static JDatePickerImpl datePicker;
 	private static UtilDateModel model;
 	private static JButton btnStartDate;
 	private static JTextArea output;
 	
+	// constants
 	private static final String GARDINER_LAKE = "Gardiner Lake";
 	private static final String HELLROARING_PLATEAU = "Hellroaring Plateau";
 	private static final String BEATEN_PATH = "Beaten Path";
-		 
+	private static final double GARDINER_LAKE_RATE = 40;
+	private static final double HELLROARING_PLATEAU_RATE = 35;
+	private static final double BEATEN_PATH_RATE = 45;
+		
+	private static String selectedHike;
+	private static Integer selectedDuration;
+	
     public static void main(String[] args) {
         // schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI
@@ -92,12 +100,12 @@ public class Week5Assignment {
         txtForHowLong.setColumns(10);
         tourSelector.getContentPane().add(txtForHowLong);
         
-        comboDuration = new JComboBox<String>();
+        comboDuration = new JComboBox<Integer>();
         comboDuration.setBounds(143, 97, 47, 20);
         tourSelector.getContentPane().add(comboDuration);
         
         model = new UtilDateModel();
-        Calendar currentDate = Calendar.getInstance();      
+        Calendar currentDate = Calendar.getInstance();
         model.setDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
         model.setSelected(true);
         datePanel = new JDatePanelImpl(model);
@@ -124,11 +132,44 @@ public class Week5Assignment {
 		// capture selected date from JDatePicker
         btnStartDate.addActionListener(new ActionListener() {
         	@Override
-        	public void actionPerformed(ActionEvent e) {
-           		BookingDay bookingDay = new BookingDay(model.getYear(), model.getMonth(), model.getDay());      		
-           		if (bookingDay.isValidDate()) {
-	        		output.setText(null);
-	        		output.append("Month=" + bookingDay.getMonth() + " Day=" + bookingDay.getDayOfMonth());
+        	public void actionPerformed(ActionEvent e) {    		
+        		BookingDay bookingStart = new BookingDay(model.getYear(), model.getMonth(), model.getDay());      		
+           		if (bookingStart.isValidDate()) {
+           			
+           			// find end date based on selected duration
+            		Calendar endDate = Calendar.getInstance();
+            		endDate.set(model.getYear(), model.getMonth(), model.getDay());
+            		endDate.add(Calendar.DATE, selectedDuration);
+            		BookingDay bookingEnd = new BookingDay(endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH), endDate.get(Calendar.DAY_OF_MONTH));
+           			
+            		if (bookingEnd.isValidDate()) {               			
+            			Rates rate = new Rates();
+            			rate.setBeginDate(bookingStart);
+            			rate.setEndDate(bookingEnd);
+
+            			// set base rates on chosen hike
+            			switch (selectedHike) {
+	            			case GARDINER_LAKE:
+	            				rate.setBaseRate(GARDINER_LAKE_RATE);
+	            				break;
+	            			case HELLROARING_PLATEAU:
+	            				rate.setBaseRate(HELLROARING_PLATEAU_RATE);
+	            				break;
+	            			case BEATEN_PATH:
+	            				rate.setBaseRate(BEATEN_PATH_RATE);
+	            				break;						
+            			}
+            			
+            			double cost = rate.getCost();
+            		           			
+            			output.setText(null);
+            			if (cost < 0) {
+            				output.append(rate.getDetails());
+            			} else {
+            				output.append("Total cost for the " + selectedHike + " hike for " + selectedDuration.toString() + 
+            								" days will cost $" + cost);
+            			}
+            		}
            		}
         	}
         });
@@ -136,27 +177,35 @@ public class Week5Assignment {
         comboHikes.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				selectedHike = (String) comboHikes.getSelectedItem();
 				populateHikeDuration();
 			}      	
+        });
+        
+        comboDuration.addActionListener(new ActionListener() {
+        	@Override
+			public void actionPerformed(ActionEvent arg0) {
+        		selectedDuration = (Integer) comboDuration.getSelectedItem();
+        	}
         });
     }
 	
 	private static void populateHikeDuration() {
 		comboDuration.removeAllItems();
-		String selectedHike = (String) comboHikes.getSelectedItem();
+		selectedHike = (String) comboHikes.getSelectedItem();
 		switch (selectedHike) {
 			case GARDINER_LAKE:
-				comboDuration.addItem("3");
-				comboDuration.addItem("5");
+				comboDuration.addItem(3);
+				comboDuration.addItem(5);
 				break;
 			case HELLROARING_PLATEAU:
-				comboDuration.addItem("2");
-				comboDuration.addItem("3");
-				comboDuration.addItem("4");
+				comboDuration.addItem(2);
+				comboDuration.addItem(3);
+				comboDuration.addItem(4);
 				break;
 			case BEATEN_PATH:
-				comboDuration.addItem("5");
-				comboDuration.addItem("7");
+				comboDuration.addItem(5);
+				comboDuration.addItem(7);
 				break;						
 		}
 	}
