@@ -18,6 +18,7 @@ import com.rbevans.bookingrate.Rates;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -51,6 +52,7 @@ public class Week5Assignment {
 		
 	private static String selectedHike;
 	private static Integer selectedDuration;
+	private static Rates rate;
 	
     public static void main(String[] args) {
         // schedule a job for the event-dispatching thread:
@@ -64,9 +66,10 @@ public class Week5Assignment {
     
     private static void createAndShowGUI() {
     	tourSelector = new JFrame("Tour Selector");
+    	tourSelector.setResizable(false);
         tourSelector.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tourSelector.getContentPane().setLayout(null);   
-        tourSelector.setSize(466, 369);
+        tourSelector.setSize(456, 362);
         tourSelector.setVisible(true);
         
     	txtpnCurrentHikingTours = new JTextField();
@@ -123,13 +126,15 @@ public class Week5Assignment {
         output = new JTextArea();
         output.setEditable(false);
         output.setBounds(10, 162, 429, 161);
-        tourSelector.getContentPane().add(output);     
+        tourSelector.getContentPane().add(output);
     }
     
 	private static void handleEvents() {		
         // create and set up the window
 		createAndShowGUI();
         
+		rate = new Rates();
+		
 		// capture selected date from JDatePicker
         btnStartDate.addActionListener(new ActionListener() {
         	@Override
@@ -143,8 +148,7 @@ public class Week5Assignment {
             		endDate.add(Calendar.DATE, selectedDuration);
             		BookingDay bookingEnd = new BookingDay(endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH)+1, endDate.get(Calendar.DAY_OF_MONTH));
            			
-            		if (bookingEnd.isValidDate()) {               			
-            			Rates rate = new Rates();
+            		if (bookingEnd.isValidDate()) {
             			rate.setBeginDate(bookingStart);
             			rate.setEndDate(bookingEnd);
 
@@ -165,7 +169,7 @@ public class Week5Assignment {
             		           			
             			output.setText(null);
             			if (cost < 0) {
-            				output.append(rate.getDetails());
+            				JOptionPane.showMessageDialog(null, rate.getDetails(), "Oops!", JOptionPane.INFORMATION_MESSAGE);
             			} else {
             				output.append("Total cost for the " + selectedHike + " hike for " + selectedDuration.toString() + 
             								" days will cost $" + cost);
