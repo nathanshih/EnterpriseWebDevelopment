@@ -19,7 +19,6 @@ import com.rbevans.bookingrate.Rates;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
@@ -33,7 +32,7 @@ public class Week5Assignment {
 	private static JFrame tourSelector;
 	private static JTextField txtChooseAHike;
 	private static JTextField txtForHowLong;
-	private static JTextPane txtpnCurrentHikingTours;
+	private static JTextField txtpnCurrentHikingTours;
 	private static JComboBox<String> comboHikes;
 	private static JComboBox<Integer> comboDuration;
 	private static JDatePanelImpl datePanel;
@@ -58,23 +57,25 @@ public class Week5Assignment {
         // creating and showing this application's GUI
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                handleEvents();
             }
         });
     }
     
-    private static void setupGUI() {
+    private static void createAndShowGUI() {
     	tourSelector = new JFrame("Tour Selector");
         tourSelector.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tourSelector.getContentPane().setLayout(null);   
-        tourSelector.setSize(466, 488);
+        tourSelector.setSize(466, 369);
         tourSelector.setVisible(true);
         
-    	txtpnCurrentHikingTours = new JTextPane();
-        txtpnCurrentHikingTours.setEditable(false);
-        txtpnCurrentHikingTours.setFont(new Font("Tahoma", Font.PLAIN, 12));
+    	txtpnCurrentHikingTours = new JTextField();
+    	txtpnCurrentHikingTours.setHorizontalAlignment(SwingConstants.CENTER);
+    	txtpnCurrentHikingTours.setEditable(false);
+        txtpnCurrentHikingTours.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtpnCurrentHikingTours.setBounds(10, 5, 429, 20);
         txtpnCurrentHikingTours.setText("Current hiking tours offered by the Beartooth Hiking Company (BHC):");
+        txtpnCurrentHikingTours.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         tourSelector.getContentPane().add(txtpnCurrentHikingTours);
         
         txtChooseAHike = new JTextField();
@@ -103,6 +104,8 @@ public class Week5Assignment {
         comboDuration = new JComboBox<Integer>();
         comboDuration.setBounds(143, 97, 47, 20);
         tourSelector.getContentPane().add(comboDuration);
+        populateHikeDuration();
+        selectedDuration = (Integer) comboDuration.getSelectedItem(); // initially set selectedDuration to avoid NPE error
         
         model = new UtilDateModel();
         Calendar currentDate = Calendar.getInstance();
@@ -119,28 +122,26 @@ public class Week5Assignment {
         
         output = new JTextArea();
         output.setEditable(false);
-        output.setBounds(10, 281, 429, 161);
+        output.setBounds(10, 162, 429, 161);
         tourSelector.getContentPane().add(output);     
     }
     
-	private static void createAndShowGUI() {		
+	private static void handleEvents() {		
         // create and set up the window
-		setupGUI();
-		
-		populateHikeDuration();
+		createAndShowGUI();
         
 		// capture selected date from JDatePicker
         btnStartDate.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {    		
-        		BookingDay bookingStart = new BookingDay(model.getYear(), model.getMonth(), model.getDay());      		
+        		BookingDay bookingStart = new BookingDay(model.getYear(), model.getMonth()+1, model.getDay());      		
            		if (bookingStart.isValidDate()) {
            			
            			// find end date based on selected duration
             		Calendar endDate = Calendar.getInstance();
             		endDate.set(model.getYear(), model.getMonth(), model.getDay());
             		endDate.add(Calendar.DATE, selectedDuration);
-            		BookingDay bookingEnd = new BookingDay(endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH), endDate.get(Calendar.DAY_OF_MONTH));
+            		BookingDay bookingEnd = new BookingDay(endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH)+1, endDate.get(Calendar.DAY_OF_MONTH));
            			
             		if (bookingEnd.isValidDate()) {               			
             			Rates rate = new Rates();
