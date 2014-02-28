@@ -8,13 +8,14 @@ import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
+import com.rbevans.bookingrate.BookingDay;
+import com.rbevans.bookingrate.Rates;
+
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 import java.util.Calendar;
-
-import com.rbevans.bookingrate.BookingDay;
-import com.rbevans.bookingrate.Rates;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,6 +25,11 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
 /**
  * @author Nathan Shih
  */
@@ -64,12 +70,16 @@ public class Week5Assignment {
         });
     }
     
+    /**
+     * This creates and sets properties on all UI elements.
+     */
     private static void createAndShowGUI() {
     	tourSelector = new JFrame("Tour Selector");
     	tourSelector.setResizable(false);
         tourSelector.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tourSelector.getContentPane().setLayout(null);   
         tourSelector.setSize(456, 362);
+        tourSelector.setLocationRelativeTo(null);
         tourSelector.setVisible(true);
         
     	txtpnCurrentHikingTours = new JTextField();
@@ -78,7 +88,7 @@ public class Week5Assignment {
         txtpnCurrentHikingTours.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtpnCurrentHikingTours.setBounds(10, 5, 429, 20);
         txtpnCurrentHikingTours.setText("Current hiking tours offered by the Beartooth Hiking Company (BHC):");
-        txtpnCurrentHikingTours.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        txtpnCurrentHikingTours.setBorder(new EmptyBorder(0, 0, 0, 0));
         tourSelector.getContentPane().add(txtpnCurrentHikingTours);
         
         txtChooseAHike = new JTextField();
@@ -91,6 +101,7 @@ public class Week5Assignment {
         tourSelector.getContentPane().add(txtChooseAHike);
               
         comboHikes = new JComboBox<String>();
+        comboHikes.setToolTipText("Current hiking tours offered and displayed here. Check back for updates!");
         comboHikes.setModel(new DefaultComboBoxModel<String>(new String[] {GARDINER_LAKE, HELLROARING_PLATEAU, BEATEN_PATH}));
         comboHikes.setBounds(143, 68, 115, 20);
         tourSelector.getContentPane().add(comboHikes);
@@ -105,6 +116,7 @@ public class Week5Assignment {
         tourSelector.getContentPane().add(txtForHowLong);
         
         comboDuration = new JComboBox<Integer>();
+        comboDuration.setToolTipText("Choose a duration for the selected hike.");
         comboDuration.setBounds(143, 97, 47, 20);
         tourSelector.getContentPane().add(comboDuration);
         populateHikeDuration(); // initially set hike durations
@@ -124,11 +136,25 @@ public class Week5Assignment {
         tourSelector.getContentPane().add(btnStartDate);
         
         output = new JTextArea();
+        output.setBackground(Color.WHITE);
         output.setEditable(false);
         output.setBounds(10, 162, 429, 161);
+        output.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        output.setLineWrap(true);
+        output.setWrapStyleWord(true);
         tourSelector.getContentPane().add(output);
+        
+        try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			SwingUtilities.updateComponentTreeUI(tourSelector);
+		} catch (Exception e) {
+			
+		}
     }
     
+    /**
+     * This handles UI events.
+     */
 	private static void handleEvents() {		
         // create and set up the window
 		createAndShowGUI();
@@ -141,7 +167,7 @@ public class Week5Assignment {
         	public void actionPerformed(ActionEvent e) {    		
         		BookingDay bookingStart = new BookingDay(model.getYear(), model.getMonth()+1, model.getDay());      		
            		if (bookingStart.isValidDate()) {
-           			
+           		
            			// find end date based on selected duration
             		Calendar endDate = Calendar.getInstance();
             		endDate.set(model.getYear(), model.getMonth(), model.getDay());
@@ -171,8 +197,8 @@ public class Week5Assignment {
             			if (cost < 0) {
             				JOptionPane.showMessageDialog(null, rate.getDetails(), "Oops!", JOptionPane.INFORMATION_MESSAGE);
             			} else {
-            				output.append("Total cost for the " + selectedHike + " hike for " + selectedDuration.toString() + 
-            								" days will cost $" + cost);
+            				output.append("Total cost for the " + selectedHike + " hike starting on " + bookingStart + 
+            								" for " + selectedDuration.toString() + " days will cost $" + cost);
             			}
             		}
            		}
@@ -195,6 +221,9 @@ public class Week5Assignment {
         });
     }
 	
+	/**
+	 * This populates the hike durations based upon the selected hike.
+	 */
 	private static void populateHikeDuration() {
 		comboDuration.removeAllItems();
 		selectedHike = (String) comboHikes.getSelectedItem();
