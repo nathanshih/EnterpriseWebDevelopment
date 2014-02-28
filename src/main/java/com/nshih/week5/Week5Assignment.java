@@ -104,7 +104,7 @@ public class Week5Assignment {
         comboDuration = new JComboBox<Integer>();
         comboDuration.setBounds(143, 97, 47, 20);
         tourSelector.getContentPane().add(comboDuration);
-        populateHikeDuration();
+        populateHikeDuration(); // initially set hike durations
         selectedDuration = (Integer) comboDuration.getSelectedItem(); // initially set selectedDuration to avoid NPE error
         
         model = new UtilDateModel();
