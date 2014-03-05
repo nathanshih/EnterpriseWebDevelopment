@@ -76,7 +76,6 @@ public class BookingDay {
      @return true if the year is between 2007 and 2020, and the day and month are valid dates
      */
     public boolean isValidDate() {
-        StringBuilder builder = new StringBuilder();
         if ((year < 2007 || year > 2020) ||
             (month < 0 || month > 11) ||
             badDay()) {
@@ -241,7 +240,7 @@ public class BookingDay {
      *
      * @return the year
      */
-    int getYear() {
+    public int getYear() {
         return year;
     }
 
