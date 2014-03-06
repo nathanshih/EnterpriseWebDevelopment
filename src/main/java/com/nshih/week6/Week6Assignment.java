@@ -51,14 +51,15 @@ public class Week6Assignment {
 	
 	private static String selectedHike;
 	private static Integer selectedDuration;
-	//private static Rates rateFromLocal;
+	//private static CalculateRate rateFromLocal;
     private static CalculateRate rateFromServer;
 	
     public static void main(String[] args) {
         // schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {     		
+            public void run() {
+            	//rateFromLocal = new CalculateRateFromLocal();
             	rateFromServer = new CalculateRateFromServer(ClassServer.SERVER_URL, ClassServer.SERVER_PORT);
         		
                 handleEvents();
@@ -163,12 +164,13 @@ public class Week6Assignment {
         		
         		if (bookingStart.isValidDate()) {
         			double cost = 0;
+        			// cost = rateFromLocal.getRate(bookingStart, selectedDuration, selectedHike);
         			cost = rateFromServer.getRate(bookingStart, selectedDuration, selectedHike);
-
+        			
         			output.setText(null);
 
         			if (cost < 1) {
-        				JOptionPane.showMessageDialog(null, "Could not calculate cost.", "Oops!", JOptionPane.INFORMATION_MESSAGE);
+        				JOptionPane.showMessageDialog(null, rateFromServer.getDetails(), "Oops!", JOptionPane.INFORMATION_MESSAGE);
         			} else {
         				output.append("Total cost for the " + selectedHike + " hike starting on " + bookingStart + 
         						" for " + selectedDuration.toString() + " days will cost $" + cost);

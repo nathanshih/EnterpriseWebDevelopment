@@ -23,9 +23,9 @@ public class CalculateRateFromServer implements CalculateRate {
 	private Socket rateSocket;
 	private PrintWriter out;
     private BufferedReader in;
-    
     private String serverUrl;
     private int port;
+    private String details;
     
 	public CalculateRateFromServer(String serverUrl, int port) {		
 		try {
@@ -44,7 +44,7 @@ public class CalculateRateFromServer implements CalculateRate {
 	}
 	
 	@Override
-	public double getRate(BookingDay startDay, Integer duration, String selectedHike) {
+	public double getRate(BookingDay bookingStart, Integer duration, String selectedHike) {
 		String input = null;
 		String output = null;
 		double rate = 0;
@@ -61,7 +61,7 @@ public class CalculateRateFromServer implements CalculateRate {
 				input = "2";
 				break;						
 		}
-		input = input + ":" + startDay.getYear() + ":" + startDay.getMonth() + ":" + startDay.getDayOfMonth()
+		input = input + ":" + bookingStart.getYear() + ":" + bookingStart.getMonth() + ":" + bookingStart.getDayOfMonth()
 					+ ":" + duration;
 		
 		// establish a new connection to the rate server
@@ -82,6 +82,7 @@ public class CalculateRateFromServer implements CalculateRate {
 			if (output != null) {
 				String[] results = output.split(":");
 				rate = Double.parseDouble(results[0]);
+				details = results[1];
 			}
 			rateSocket.close();
 			return rate;
@@ -89,6 +90,11 @@ public class CalculateRateFromServer implements CalculateRate {
 			e1.printStackTrace();
 			return rate;
 		}
+	}
+
+	@Override
+	public String getDetails() {
+		return details;
 	}
 	
 	private void connectToRateServer(String serverUrl, int port) throws IOException {
