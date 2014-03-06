@@ -8,6 +8,8 @@ import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
+import com.nshih.utils.ClassServer;
+import com.nshih.utils.Hikes;
 import com.rbevans.bookingrate.BookingDay;
 
 import java.awt.Font;
@@ -47,13 +49,6 @@ public class Week6Assignment {
 	private static JButton btnStartDate;
 	private static JTextArea output;
 	
-	// constants
-	private static final String GARDINER_LAKE = "Gardiner Lake";
-	private static final String HELLROARING_PLATEAU = "Hellroaring Plateau";
-	private static final String BEATEN_PATH = "Beaten Path";
-	private static final String SERVER_URL = "web7.apl.jhu.edu";
-	private static final int SERVER_PORT = 20025;
-	
 	private static String selectedHike;
 	private static Integer selectedDuration;
 	//private static Rates rateFromLocal;
@@ -64,7 +59,7 @@ public class Week6Assignment {
         // creating and showing this application's GUI
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {     		
-            	rateFromServer = new CalculateRateFromServer(SERVER_URL, SERVER_PORT);
+            	rateFromServer = new CalculateRateFromServer(ClassServer.SERVER_URL, ClassServer.SERVER_PORT);
         		
                 handleEvents();
             }
@@ -103,7 +98,7 @@ public class Week6Assignment {
               
         comboHikes = new JComboBox<String>();
         comboHikes.setToolTipText("Current hiking tours offered and displayed here. Check back for updates!");
-        comboHikes.setModel(new DefaultComboBoxModel<String>(new String[] {GARDINER_LAKE, HELLROARING_PLATEAU, BEATEN_PATH}));
+        comboHikes.setModel(new DefaultComboBoxModel<String>(new String[] {Hikes.GARDINER_LAKE, Hikes.HELLROARING_PLATEAU, Hikes.BEATEN_PATH}));
         comboHikes.setBounds(143, 68, 115, 20);
         tourSelector.getContentPane().add(comboHikes);
         
@@ -205,18 +200,20 @@ public class Week6Assignment {
 		comboDuration.removeAllItems();
 		selectedHike = (String) comboHikes.getSelectedItem();
 		switch (selectedHike) {
-			case GARDINER_LAKE:
-				comboDuration.addItem(3);
-				comboDuration.addItem(5);
+			case Hikes.GARDINER_LAKE:
+				for (int duration : Hikes.GARDINER_LAKE_DURATIONS) {
+					comboDuration.addItem(duration);
+				}
 				break;
-			case HELLROARING_PLATEAU:
-				comboDuration.addItem(2);
-				comboDuration.addItem(3);
-				comboDuration.addItem(4);
+			case Hikes.HELLROARING_PLATEAU:
+				for (int duration : Hikes.HELLROARING_PLATEAU_DURATIONS) {
+					comboDuration.addItem(duration);
+				}
 				break;
-			case BEATEN_PATH:
-				comboDuration.addItem(5);
-				comboDuration.addItem(7);
+			case Hikes.BEATEN_PATH:
+				for (int duration : Hikes.BEATEN_PATH_DURATIONS) {
+					comboDuration.addItem(duration);
+				}
 				break;						
 		}
 	}

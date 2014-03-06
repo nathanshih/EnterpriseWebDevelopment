@@ -12,10 +12,10 @@ import com.rbevans.bookingrate.BookingDay;
 public interface CalculateRate {
 
 	/**
-	 * Calculates the rate based upon the start date, length of hike, and base rate.
+	 * Calculates the rate based upon the start date, length of hike, and selected hike.
 	 * @param startDay the start date of the hike 
 	 * @param duration length of the hike
-	 * @param selectedHike base rate of the hike
+	 * @param selectedHike the selected hike
 	 * @return The calculated rate as a double.
 	 */
 	public double getRate(BookingDay startDay, Integer duration, String selectedHike);

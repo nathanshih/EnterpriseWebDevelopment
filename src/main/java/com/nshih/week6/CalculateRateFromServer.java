@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import com.nshih.utils.Hikes;
 import com.rbevans.bookingrate.BookingDay;
 
 /**
@@ -19,17 +20,12 @@ import com.rbevans.bookingrate.BookingDay;
  */
 public class CalculateRateFromServer implements CalculateRate {
 
-	private static Socket rateSocket;
-	private static PrintWriter out;
-    private static BufferedReader in;
+	private Socket rateSocket;
+	private PrintWriter out;
+    private BufferedReader in;
     
     private String serverUrl;
     private int port;
-	
-    // constants
-    private static final String GARDINER_LAKE = "Gardiner Lake";
-	private static final String HELLROARING_PLATEAU = "Hellroaring Plateau";
-	private static final String BEATEN_PATH = "Beaten Path";
     
 	public CalculateRateFromServer(String serverUrl, int port) {		
 		try {
@@ -55,13 +51,13 @@ public class CalculateRateFromServer implements CalculateRate {
 		
 		// build the input string for the rate server
 		switch (selectedHike) {
-			case GARDINER_LAKE:
+			case Hikes.GARDINER_LAKE:
 				input = "0";
 				break;
-			case HELLROARING_PLATEAU:
+			case Hikes.HELLROARING_PLATEAU:
 				input = "1";
 				break;
-			case BEATEN_PATH:
+			case Hikes.BEATEN_PATH:
 				input = "2";
 				break;						
 		}
