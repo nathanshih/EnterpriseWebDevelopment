@@ -35,11 +35,11 @@ public class CalculateRateFromServer implements CalculateRate {
 			this.serverUrl = serverUrl;
 		    this.port = port;
 		} catch (UnknownHostException e) {
-            System.err.println("Don't know about host: " + serverUrl);
-            System.exit(1);
+			details = "Don't know about host: " + serverUrl;
+            System.err.println(details);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to: " + serverUrl);
-            System.exit(1);
+        	details = "Couldn't get I/O for the connection to: " + serverUrl;
+            System.err.println(details);
         }
 	}
 	

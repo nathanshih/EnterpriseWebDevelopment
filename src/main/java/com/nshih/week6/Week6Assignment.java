@@ -60,7 +60,13 @@ public class Week6Assignment {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
             	//rateFromLocal = new CalculateRateFromLocal();
+            	
             	rateFromServer = new CalculateRateFromServer(ClassServer.SERVER_URL, ClassServer.SERVER_PORT);
+            	// show error message if can't connect to rate server
+        		if (rateFromServer.getDetails() != null) {
+        			JOptionPane.showMessageDialog(null, rateFromServer.getDetails(), "Doh!", JOptionPane.ERROR_MESSAGE);
+        			System.exit(1);
+        		}
         		
                 handleEvents();
             }
