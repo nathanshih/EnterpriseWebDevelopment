@@ -14,6 +14,11 @@ import java.net.UnknownHostException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Assert;
+
+import com.nshih.utils.ClassServer;
+import com.nshih.week9.CalculateRateLocal;
+import com.rbevans.bookingrate.BookingDay;
 
 /**
  * @author Nathan Shih
@@ -23,11 +28,12 @@ public class Week9AssignmentTests {
 	private static Socket clientSocket;
 	private static PrintWriter out;
     private static BufferedReader in;
+    private static CalculateRateLocal calculateRateLocal;
 	
 	@BeforeClass
 	public static void setupClass() {
 		try {
-			clientSocket = new Socket("localhost", 1116);
+			clientSocket = new Socket("localhost", ClassServer.MY_PORT);
 			// set up new output writer and input reader
 		    out = new PrintWriter(clientSocket.getOutputStream(), true);
 		    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -38,6 +44,8 @@ public class Week9AssignmentTests {
 			// TODO Auto-generated catch block
 			ie.printStackTrace();
 		}
+			
+		calculateRateLocal = new CalculateRateLocal();
 	}
 	
 	@AfterClass
@@ -50,20 +58,43 @@ public class Week9AssignmentTests {
 		}
 	}
 	
+	/**
+	 * Happy path test using good data.
+	 */
 	@Test
 	public void testHappyPath() {
 		String input = null;
 		String output = null;
 		
 		input = "2008:7:1:2008:7:8:40";
+		
+		// expected values
+		BookingDay expectedBookingStart = new BookingDay(2008, 7, 1);
+		BookingDay expectedBookingEnd= new BookingDay(2008, 7, 8);
+		String expectedRate = String.valueOf(calculateRateLocal.getRate(expectedBookingStart, expectedBookingEnd, 40));
+		
+		// send to server
 		out.println(input);
 		
 		try {
 			output = in.readLine();
-			System.out.println(output);
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
 		} catch (IOException ie) {
 			// TODO Auto-generated catch block
 			ie.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Send null input to server.
+	 */
+	
+	/**
+	 * Bad input: "foo:bar:baz:bom"
+	 */
+	
+	/**
+	 * Bad input: "1:1:1:1:1"
+	 */
 }
