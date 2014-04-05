@@ -22,6 +22,10 @@ public class RateServerThread implements Runnable {
 	private BookingDay bookingStart;
 	private BookingDay bookingEnd;
 	private int baseRate;
+	private String reason;
+	
+	// input string must match this format (ex: 2008:7:1:2008:7:8:40)
+	private final String format = "^\\d{4}(:)\\d{1,2}(:)\\d{1,2}(:)\\d{4}(:)\\d{1,2}(:)\\d{1,2}(:)\\d{2}$";
 	
 	public RateServerThread(Socket clientSocket) {
 		this.socket = clientSocket;
@@ -34,7 +38,8 @@ public class RateServerThread implements Runnable {
 		BufferedReader in = null;
         PrintWriter out = null;
 		calculateRateLocal = new CalculateRateLocal();
-
+		reason = null;
+		
         try {
         	out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -44,8 +49,12 @@ public class RateServerThread implements Runnable {
             while (!socket.isClosed()) {
             	// validate the input
             	input = in.readLine();
-            	if (!validateInput(input)) {
-            		// return error to user
+            	if (input == null) {
+            		reason = "-0.01:Input cannot be null";
+            		out.println(reason);
+            		break;
+            	} else if (!validateInput(input)) {
+            		out.println(reason);
             		break;
             	} else {
             		if (parseData(input)) {
@@ -77,7 +86,15 @@ public class RateServerThread implements Runnable {
 	}
 	
 	private boolean validateInput(String input) {
-		boolean isValid = true;
+		boolean isValid = false;
+		
+		if (input.matches(format)) {
+			isValid = true;
+		} else {
+			reason = "-0.01:Input string must match this format: "
+					+ "begin_year:begin_month:begin_day:end_year:end_month:end_day:base_rate "
+					+ "(e.g: 2008:7:1:2008:7:8:40)";
+		}
 		
 		return isValid;
 	}
