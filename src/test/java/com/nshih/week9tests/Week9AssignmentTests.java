@@ -38,10 +38,8 @@ public class Week9AssignmentTests {
 		    out = new PrintWriter(clientSocket.getOutputStream(), true);
 		    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		} catch (UnknownHostException uhe) {
-			// TODO Auto-generated catch block
 			uhe.printStackTrace();
 		} catch (IOException ie) {
-			// TODO Auto-generated catch block
 			ie.printStackTrace();
 		}
 			
@@ -53,7 +51,6 @@ public class Week9AssignmentTests {
 		try {
 			clientSocket.close();
 		} catch (IOException ie) {
-			// TODO Auto-generated catch block
 			ie.printStackTrace();
 		}
 	}
@@ -81,20 +78,205 @@ public class Week9AssignmentTests {
 			String[] actuals = output.split(":");
 			Assert.assertEquals(expectedRate, actuals[0]);
 		} catch (IOException ie) {
-			// TODO Auto-generated catch block
-			ie.printStackTrace();
+			Assert.fail(ie.getMessage());
 		}
 	}
 	
 	/**
 	 * Send null input to server.
 	 */
+	@Test
+	public void testNullInput() {
+		String input = null;
+		String output = null;
+		
+		// expected value
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
 	
 	/**
 	 * Bad input: "foo:bar:baz:bom"
 	 */
+	@Test
+	public void testBadInput1() {
+		String input = null;
+		String output = null;
+		
+		input = "foo:bar:baz:bom";
+		
+		// expected value
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
 	
 	/**
 	 * Bad input: "1:1:1:1:1"
 	 */
+	@Test
+	public void testBadInput2() {
+		String input = null;
+		String output = null;
+		
+		input = "1:1:1:1:1";
+		
+		// expected value
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Invalid dates: end date is far in the past
+	 */
+	@Test
+	public void testInvalidDates1() {
+		String input = null;
+		String output = null;
+		
+		input = "2020:7:1:1908:7:8:40";
+		
+		// expected values
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Invalid dates: end date is a few days in the past
+	 */
+	@Test
+	public void testInvalidDates2() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:7:2:2008:7:1:40";
+		
+		// expected values
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Base rate is less than 0
+	 */
+	@Test
+	public void testNegativeBaseRate() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:7:2:2008:7:1:-1";
+		
+		// expected values
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Base rate is 0
+	 */
+	@Test
+	public void testZeroBaseRate() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:7:2:2008:7:1:0";
+		
+		// expected values
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Base rate is greater than 100
+	 */
+	@Test
+	public void test101BaseRate() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:7:2:2008:7:1:101";
+		
+		// expected values
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
 }

@@ -38,15 +38,14 @@ public class RateServerThread implements Runnable {
 		BufferedReader in = null;
         PrintWriter out = null;
 		calculateRateLocal = new CalculateRateLocal();
-		reason = "-0.01";
-		
+			
         try {
         	out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             // do stuff with the in and out
             String input = null;
-            String output = null;
             while (!socket.isClosed()) {
+            	reason = "-0.01";
             	input = in.readLine();
             	
             	// check if input is null
@@ -54,27 +53,23 @@ public class RateServerThread implements Runnable {
             		reason = reason + ":Input cannot be null";
             		out.println(reason);
             		break;
-            	}
             	
             	// validate if input is in correct format
-            	if (!input.matches(format)) {
+            	} else if (!input.matches(format)) {
             		reason = reason + ":Input string must match this format"
         					+ " \"begin_year:begin_month:begin_day:end_year:end_month:end_day:base_rate\" "
         					+ "(e.g: 2008:7:1:2008:7:8:40)";
             		out.println(reason);
-            		break;
-            	}
             	
             	// attempt to parse data returns false if data is invalid
-            	if (!parseData(input)) {
+            	} else if (!parseData(input)) {
             		out.println(reason);
-            		break;
             		
             	// data is valid return rate
             	} else {
-            		output = String.valueOf(calculateRateLocal.getRate(bookingStart, bookingEnd, baseRate));
-            		output = output + ":Quoted Rate";
-            		out.println(output);
+            		reason = String.valueOf(calculateRateLocal.getRate(bookingStart, bookingEnd, baseRate));
+            		reason = reason + ":Quoted Rate";
+            		out.println(reason);
             	}
             }
         } catch (IOException ie) {
@@ -103,7 +98,9 @@ public class RateServerThread implements Runnable {
 	 * @return Returns true if data is valid otherwise returns false.
 	 */
 	private boolean parseData(String input) {
-		boolean isParsed = false;
+		boolean bookingStartValid = false;
+		boolean bookingEndValid = false;
+		boolean baseRateValid = false;
 		
 		String[] data = input.split(":");
 		
@@ -124,17 +121,26 @@ public class RateServerThread implements Runnable {
 		
 		if (!bookingStart.isValidDate()) {
 			reason = reason + ":Start date is not a valid date";
-		} 
-		if (!bookingEnd.isValidDate()) {
+		} else {
+			bookingStartValid = true;
+		}
+		
+		if (!bookingEnd.isValidDate() || !bookingEnd.after(bookingStart)) {
 			reason = reason + ":End date is not a valid date";
-		} 
+		} else {
+			bookingEndValid = true;
+		}
+		
 		if (baseRate < 0 || baseRate > 100) {
 			reason = reason + ":Base rate needs to be greater than 0 and less than 100";
 		} else {
-			reason = "";
-			isParsed = true;
+			baseRateValid = true;
 		}
 		
-		return isParsed;
+		if (bookingStartValid && bookingEndValid && baseRateValid) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
