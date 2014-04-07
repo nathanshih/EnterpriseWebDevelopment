@@ -23,14 +23,14 @@ public class RateServer {
 		
 		if (args.length != 1) {
 			System.err.println("Usage: java RateServer <port number>");
-			System.exit(1);
-		}
-		
-		try {
-			portNumber = Integer.parseInt(args[0]);
-		} catch (NumberFormatException nfe) {
-			System.err.println("Invalid port number");
-			System.exit(-1);
+			System.out.println("Defaulting to port: " + portNumber);
+		} else {	
+			try {
+				portNumber = Integer.parseInt(args[0]);
+			} catch (NumberFormatException nfe) {
+				System.err.println("Invalid port number");
+				System.out.println("Defaulting to port: " + portNumber);
+			}
 		}
 		
 		boolean listening = true;
