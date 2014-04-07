@@ -68,7 +68,7 @@ public class Week9AssignmentTests {
 		// expected values
 		BookingDay expectedBookingStart = new BookingDay(2008, 7, 1);
 		BookingDay expectedBookingEnd= new BookingDay(2008, 7, 8);
-		String expectedRate = String.valueOf(calculateRateLocal.getRate(expectedBookingStart, expectedBookingEnd, 40));
+		String expectedRate = calculateRateLocal.getRate(expectedBookingStart, expectedBookingEnd, 40);
 		
 		// send to server
 		out.println(input);
@@ -213,7 +213,7 @@ public class Week9AssignmentTests {
 		String input = null;
 		String output = null;
 		
-		input = "2008:7:2:2008:7:1:-1";
+		input = "2008:7:1:2008:7:8:-1";
 		
 		// expected values
 		String expectedRate = "-0.01";
@@ -238,10 +238,37 @@ public class Week9AssignmentTests {
 		String input = null;
 		String output = null;
 		
-		input = "2008:7:2:2008:7:1:0";
+		input = "2008:7:1:2008:7:8:0";
 		
 		// expected values
 		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Base rate is 1
+	 */
+	@Test
+	public void testOneBaseRate() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:7:1:2008:7:8:1";
+		
+		// expected values
+		BookingDay expectedBookingStart = new BookingDay(2008, 7, 1);
+		BookingDay expectedBookingEnd= new BookingDay(2008, 7, 8);
+		String expectedRate = calculateRateLocal.getRate(expectedBookingStart, expectedBookingEnd, 1);
 		
 		// send to server
 		out.println(input);
@@ -263,7 +290,109 @@ public class Week9AssignmentTests {
 		String input = null;
 		String output = null;
 		
-		input = "2008:7:2:2008:7:1:101";
+		input = "2008:7:1:2008:7:8:101";
+		
+		// expected values
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Base rate is 100
+	 */
+	@Test
+	public void test100BaseRate() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:7:1:2008:7:8:100";
+		
+		// expected values
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Base rate is 99
+	 */
+	@Test
+	public void test99BaseRate() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:7:1:2008:7:8:99";
+		
+		// expected values
+		BookingDay expectedBookingStart = new BookingDay(2008, 7, 1);
+		BookingDay expectedBookingEnd= new BookingDay(2008, 7, 8);
+		String expectedRate = calculateRateLocal.getRate(expectedBookingStart, expectedBookingEnd, 99);
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * Start date is out of season
+	 */
+	@Test
+	public void testOutOfSeason1() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:1:2:2008:7:1:20";
+		
+		// expected values
+		String expectedRate = "-0.01";
+		
+		// send to server
+		out.println(input);
+		
+		try {
+			output = in.readLine();
+			String[] actuals = output.split(":");
+			Assert.assertEquals(expectedRate, actuals[0]);
+		} catch (IOException ie) {
+			Assert.fail(ie.getMessage());
+		}
+	}
+	
+	/**
+	 * End date is out of season
+	 */
+	@Test
+	public void testOutOfSeason2() {
+		String input = null;
+		String output = null;
+		
+		input = "2008:9:29:2008:10:3:20";
 		
 		// expected values
 		String expectedRate = "-0.01";

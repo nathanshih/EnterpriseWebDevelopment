@@ -25,7 +25,7 @@ public class RateServerThread implements Runnable {
 	private String reason;
 	
 	// input string must match this format (ex: 2008:7:1:2008:7:8:40)
-	private final String format = "^\\d{4}(:)\\d{1,2}(:)\\d{1,2}(:)\\d{4}(:)\\d{1,2}(:)\\d{1,2}(:)\\d{2}$";
+	private final String format = "^\\d{4}(:)\\d{1,2}(:)\\d{1,2}(:)\\d{4}(:)\\d{1,2}(:)\\d{1,2}(:)\\d{1,2}$";
 	
 	public RateServerThread(Socket clientSocket) {
 		this.socket = clientSocket;
@@ -67,7 +67,7 @@ public class RateServerThread implements Runnable {
             		
             	// data is valid return rate
             	} else {
-            		reason = String.valueOf(calculateRateLocal.getRate(bookingStart, bookingEnd, baseRate));
+            		reason = calculateRateLocal.getRate(bookingStart, bookingEnd, baseRate);
             		reason = reason + ":Quoted Rate";
             		out.println(reason);
             	}
@@ -98,8 +98,7 @@ public class RateServerThread implements Runnable {
 	 * @return Returns true if data is valid otherwise returns false.
 	 */
 	private boolean parseData(String input) {
-		boolean bookingStartValid = false;
-		boolean bookingEndValid = false;
+		boolean isDatesValid = false;
 		boolean baseRateValid = false;
 		
 		String[] data = input.split(":");
@@ -119,25 +118,19 @@ public class RateServerThread implements Runnable {
 		// get base rate
 		baseRate = Integer.valueOf(data[6]);
 		
-		if (!bookingStart.isValidDate()) {
-			reason = reason + ":Start date is not a valid date";
+		if (!calculateRateLocal.isValidDates(bookingStart, bookingEnd)) {
+			reason = reason + ":" + calculateRateLocal.getDetails();
 		} else {
-			bookingStartValid = true;
+			isDatesValid = true;
 		}
 		
-		if (!bookingEnd.isValidDate() || !bookingEnd.after(bookingStart)) {
-			reason = reason + ":End date is not a valid date";
-		} else {
-			bookingEndValid = true;
-		}
-		
-		if (baseRate < 0 || baseRate > 100) {
+		if (baseRate < 1 || baseRate > 99) {
 			reason = reason + ":Base rate needs to be greater than 0 and less than 100";
 		} else {
 			baseRateValid = true;
 		}
 		
-		if (bookingStartValid && bookingEndValid && baseRateValid) {
+		if (isDatesValid && baseRateValid) {
 			return true;
 		} else {
 			return false;
